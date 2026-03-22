@@ -1,0 +1,261 @@
+/* ── Shared ────────────────────────────────────────────────── */
+.centered {
+  display: flex; justify-content: center; align-items: center; padding: 80px;
+}
+
+.panel { display: flex; flex-direction: column; gap: 22px; }
+
+.panelHeader {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.panelTag {
+  font-size: 10px; color: var(--cyan);
+  letter-spacing: 0.22em; margin-bottom: 5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.panelTag::before {
+  content: ''; display: inline-block;
+  width: 16px; height: 1px; background: var(--cyan); opacity: 0.5;
+}
+
+.panelTitle {
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 800; line-height: 1; color: var(--text-primary);
+}
+
+/* ── Banners ───────────────────────────────────────────────── */
+.errorBanner {
+  padding: 13px 16px;
+  background: rgba(255,107,107,0.07);
+  border: 1px solid rgba(255,107,107,0.2);
+  border-radius: var(--radius-md);
+  color: #ff8585; font-size: 13px;
+}
+.successBanner {
+  padding: 13px 16px;
+  background: rgba(0,220,110,0.07);
+  border: 1px solid rgba(0,220,110,0.2);
+  border-radius: var(--radius-md);
+  color: #00DC6E; font-size: 13px;
+}
+
+/* ── Orders ────────────────────────────────────────────────── */
+.orderList { display: flex; flex-direction: column; gap: 12px; }
+
+.orderCard {
+  padding: 20px;
+  transition: transform 200ms var(--ease-out), box-shadow 200ms ease;
+}
+.orderCard:hover { transform: translateY(-1px); }
+
+.orderTop {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 14px; margin-bottom: 16px;
+}
+
+.orderLeft {
+  display: flex; align-items: flex-start;
+  gap: 14px; flex: 1; min-width: 0;
+}
+
+.tableNum {
+  width: 42px; height: 42px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-overlay));
+  border: 1px solid var(--border-cyan);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+  color: var(--cyan); flex-shrink: 0;
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.orderDishes {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.3; font-family: var(--font-display);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px;
+}
+.orderId {
+  font-size: 11px; color: var(--text-muted);
+  letter-spacing: 0.08em; margin-top: 4px;
+}
+
+.orderRight {
+  display: flex; flex-direction: column;
+  align-items: flex-end; gap: 6px; flex-shrink: 0;
+}
+
+.orderBottom {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px; border-top: 1px solid var(--border-subtle);
+}
+.orderTime { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; font-family: var(--font-mono); }
+.doneLabel { font-size: 12px; color: #00DC6E; letter-spacing: 0.06em; font-family: var(--font-mono); }
+
+/* Status progress segments */
+.progressWrap { display: flex; gap: 4px; margin-top: 14px; }
+.progressSeg {
+  flex: 1; height: 3px; border-radius: 2px;
+  background: var(--border-dim); transition: background 400ms ease;
+}
+.progressActive {
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  box-shadow: 0 0 6px var(--cyan-glow);
+}
+
+/* ── Alerts ────────────────────────────────────────────────── */
+.alertHeader {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 14px;
+}
+.alertPulse { display: flex; align-items: center; gap: 8px; }
+.alertDot {
+  width: 7px; height: 7px; background: #FFD54F;
+  border-radius: 50%; animation: pulseEmber 1.5s infinite;
+  box-shadow: 0 0 8px rgba(255,213,79,0.5);
+}
+.alertDishes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.alertSection { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+.alertSectionLabel {
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.14em; margin-bottom: 8px; font-family: var(--font-mono);
+}
+.alertTags { display: flex; flex-wrap: wrap; gap: 6px; }
+.alertNote {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px; padding: 11px 14px;
+  background: rgba(255,200,0,0.05);
+  border: 1px solid rgba(255,200,0,0.14);
+  border-radius: var(--radius-sm); font-size: 12px; color: var(--text-secondary);
+}
+
+/* ── Tables ────────────────────────────────────────────────── */
+.tableStatusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+.tableStatusCard {
+  padding: 20px;
+  transition: transform 200ms var(--ease-out);
+}
+.tableStatusCard:hover { transform: translateY(-2px); }
+
+.tableTopRow {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 14px;
+}
+.tableNumLarge {
+  font-size: 28px; font-weight: 700; color: var(--cyan);
+  font-family: var(--font-mono); line-height: 1;
+}
+.tableUserInfo { display: flex; flex-direction: column; gap: 5px; }
+.tableUserName {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  font-family: var(--font-display);
+}
+.tableUserPhone { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.06em; }
+.tableAllergyList { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tableAlert {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 10px; font-size: 12px; color: #FFD54F;
+}
+.tableEmpty { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.06em; }
+
+/* ── Inventory ─────────────────────────────────────────────── */
+.alertsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.alertCard { padding: 18px; }
+.alertCardLabel {
+  font-size: 10px; color: #ff8585;
+  letter-spacing: 0.16em; margin-bottom: 12px; font-family: var(--font-mono);
+}
+.alertItem {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px; color: var(--text-secondary); gap: 8px;
+}
+.alertItem:last-child { border-bottom: none; }
+
+/* Add form */
+.addForm { margin-bottom: 4px; }
+.formTitle {
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.18em; margin-bottom: 18px; font-family: var(--font-mono);
+}
+.inventoryForm {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+.inventoryForm > *:last-child { grid-column: 1 / -1; }
+
+.selectWrap { display: flex; flex-direction: column; gap: 7px; }
+.selectLabel {
+  font-size: 11px; font-weight: 500; color: var(--text-muted);
+  letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-mono);
+}
+.selectEl {
+  width: 100%; padding: 13px 16px;
+  background: var(--bg-elevated); border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md); color: var(--text-primary);
+  font-family: var(--font-body); font-size: 15px;
+  outline: none; cursor: pointer; transition: all 200ms ease;
+}
+.selectEl:focus {
+  border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow-md);
+}
+
+/* Inventory table */
+.invTable { border: 1px solid var(--border-dim); border-radius: var(--radius-lg); overflow: hidden; }
+.invHeader {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr 1.2fr;
+  padding: 12px 20px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-dim);
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.12em; gap: 12px; font-family: var(--font-mono);
+}
+.invRow {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr 1.2fr;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px; color: var(--text-secondary);
+  gap: 12px; align-items: center;
+  transition: background 150ms ease;
+}
+.invRow:last-child { border-bottom: none; }
+.invRow:hover { background: var(--bg-raised); }
+
+/* Dish management */
+.dishManageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+.dishManageCard { padding: 18px; }
+.dishManageTop {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; margin-bottom: 12px;
+}
+.dishManageId {
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.1em; margin-bottom: 4px; font-family: var(--font-mono);
+}
+.dishManageName {
+  font-size: 16px; font-weight: 700;
+  font-family: var(--font-display); color: var(--text-primary);
+}
+.dishManagePrice {
+  font-size: 18px; font-weight: 600; color: var(--ember); font-family: var(--font-mono);
+}
+.dishIngredients { display: flex; flex-wrap: wrap; gap: 5px; }
+
+@media (max-width: 640px) {
+  .invHeader, .invRow { grid-template-columns: 2fr 1fr 1fr; }
+  .invHeader span:nth-child(4), .invHeader span:nth-child(5),
+  .invRow > *:nth-child(4), .invRow > *:nth-child(5) { display: none; }
+  .inventoryForm { grid-template-columns: 1fr; }
+}

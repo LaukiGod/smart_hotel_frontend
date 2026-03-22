@@ -1,0 +1,117 @@
+.root {
+  min-height: 100vh;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Thin progress bar at very top */
+.progressWrap {
+  height: 2px;
+  background: var(--border-subtle);
+  position: relative;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ember-dim), var(--ember), var(--ember-bright));
+  transition: width 500ms var(--ease-out);
+  position: relative;
+}
+.progressFill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+  animation: shimmerSlide 1.5s ease-in-out infinite;
+}
+
+/* Step row */
+.stepRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 20px 24px 4px;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* Connector line between steps */
+.stepItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(50% + 16px);
+  top: 14px;
+  width: calc(100% - 4px);
+  height: 1px;
+  background: var(--border-dim);
+  /* gap between items handled by parent gap */
+}
+
+.stepItem {
+  flex: 1;
+  max-width: 120px;
+}
+
+.stepDot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  transition: all 300ms var(--ease-out);
+  position: relative;
+  z-index: 1;
+}
+
+.stepDone {
+  background: var(--ember);
+  border: 2px solid var(--ember);
+  color: #fff;
+}
+
+.stepCurrent {
+  background: transparent;
+  border: 2px solid var(--ember);
+  color: var(--ember);
+  box-shadow: 0 0 0 4px var(--ember-glow), 0 0 16px var(--ember-glow-strong);
+  animation: pulseEmber 2.5s ease-in-out infinite;
+}
+
+.stepFuture {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-dim);
+  color: var(--text-faint);
+}
+
+.stepLabel {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  transition: color 250ms ease;
+}
+.stepLabelActive {
+  color: var(--ember);
+}
+
+/* Page content */
+.content {
+  flex: 1;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 100px;
+}

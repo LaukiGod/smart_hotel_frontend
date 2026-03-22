@@ -1,0 +1,96 @@
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 58px;
+  background: rgba(12, 14, 17, 0.88);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.brandName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.brandSub {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.sessionTag {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.sessionEmber {
+  background: var(--ember-glow);
+  color: var(--ember);
+  border: 1px solid var(--border-ember);
+}
+.sessionCyan {
+  background: var(--cyan-glow);
+  color: var(--cyan);
+  border: 1px solid var(--border-cyan);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.liveEmber { background: var(--ember); animation: pulseEmber 2s infinite; }
+.liveCyan  { background: var(--cyan);  animation: pulseCyan  2s infinite; }
+
+.exit {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dim);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+.exit:hover {
+  border-color: var(--border-ember);
+  color: var(--ember);
+  background: var(--ember-glow);
+}
