@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { api } from '../../utils/api'
-import { Card, Badge, Spinner, Button } from '../UI'
+import { Card, Badge, Spinner, Button, EmptyState } from '../UI'
 import styles from './DashPanels.module.css'
 
 export default function TablesPanel() {
   const [tables, setTables] = useState([])
   const [loading, setLoading] = useState(true)
+  const [clearing, setClearing] = useState(null)
+  const [error, setError] = useState('')
 
   async function load() {
     setLoading(true)
@@ -16,10 +18,23 @@ export default function TablesPanel() {
 
   useEffect(() => { load() }, [])
 
+  async function handleClearTable(tableNo) {
+    setClearing(tableNo)
+    setError('')
+    try {
+      await api.clearTable({ tableNo })
+      await load()
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setClearing(null)
+    }
+  }
+
   if (loading) return <div className={styles.centered}><Spinner size={32} color="cyan" /></div>
 
-  const occupied = tables.filter(t => t.status === 'occupied').length
-  const free     = tables.filter(t => t.status === 'free').length
+  const occupied = tables.filter(t => t.status === 'occupied')
+  const freeCount = tables.length - occupied.length
 
   return (
     <div className={`${styles.panel} animate-fade-up`}>
@@ -29,16 +44,19 @@ export default function TablesPanel() {
           <h2 className={`${styles.panelTitle} display`}>Tables</h2>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <Badge variant="ember">{occupied} Occupied</Badge>
-          <Badge variant="success">{free} Free</Badge>
+          <Badge variant="ember">{occupied.length} Occupied</Badge>
+          <Badge variant="success">{freeCount} Free</Badge>
           <Button variant="ghost" size="sm" onClick={load}>↻</Button>
         </div>
       </div>
 
-      <div className={styles.tableStatusGrid}>
-        {tables.map((table, i) => {
-          const isOcc = table.status === 'occupied'
-          return (
+      {error && <div className={styles.errorBanner}>⚠ {error}</div>}
+
+      {occupied.length === 0 ? (
+        <EmptyState icon="✓" title="No occupied tables" sub="All tables are currently free" />
+      ) : (
+        <div className={styles.tableStatusGrid}>
+          {occupied.map((table, i) => (
             <Card
               key={table._id}
               className={`${styles.tableStatusCard} animate-fade-up`}
@@ -47,12 +65,10 @@ export default function TablesPanel() {
             >
               <div className={styles.tableTopRow}>
                 <div className={`${styles.tableNumLarge} mono`}>T{table.tableNo}</div>
-                <Badge variant={isOcc ? 'ember' : 'success'}>
-                  {isOcc ? 'OCCUPIED' : 'FREE'}
-                </Badge>
+                <Badge variant="ember">OCCUPIED</Badge>
               </div>
 
-              {isOcc && table.currentUser ? (
+              {table.currentUser && (
                 <div className={styles.tableUserInfo}>
                   <div className={styles.tableUserName}>{table.currentUser.name}</div>
                   <div className={`${styles.tableUserPhone} mono`}>{table.currentUser.phoneNo}</div>
@@ -69,13 +85,22 @@ export default function TablesPanel() {
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className={styles.tableEmpty}>Available</div>
               )}
+
+              <div style={{ marginTop: 14 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  loading={clearing === table.tableNo}
+                  onClick={() => handleClearTable(table.tableNo)}
+                >
+                  {clearing === table.tableNo ? 'Clearing…' : '✕ Clear Table'}
+                </Button>
+              </div>
             </Card>
-          )
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

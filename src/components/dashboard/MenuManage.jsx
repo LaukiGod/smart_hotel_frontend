@@ -7,14 +7,16 @@ const EMPTY_ADD = { name: '', price: '', ingredients: '', recipe: '' }
 const EMPTY_EDIT = { dishId: '', price: '', ingredients: '', recipe: '' }
 
 export default function MenuManage() {
-  const [dishes, setDishes] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [dishes, setDishes]       = useState([])
+  const [loading, setLoading]     = useState(true)
   const [activeForm, setActiveForm] = useState(null) // 'add' | 'edit'
-  const [addForm, setAddForm] = useState(EMPTY_ADD)
-  const [editForm, setEditForm] = useState(EMPTY_EDIT)
+  const [addForm, setAddForm]     = useState(EMPTY_ADD)
+  const [editForm, setEditForm]   = useState(EMPTY_EDIT)
+  const [editingId, setEditingId] = useState(null)   // _id of card being edited
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
+  const [deleting, setDeleting]   = useState(null)
+  const [error, setError]         = useState('')
+  const [success, setSuccess]     = useState('')
 
   async function load() {
     setLoading(true)
@@ -52,27 +54,48 @@ export default function MenuManage() {
     if (!editForm.dishId) return
     setSubmitting(true); setError(''); setSuccess('')
     const payload = { dishId: Number(editForm.dishId) }
-    if (editForm.price) payload.price = Number(editForm.price)
+    if (editForm.price)       payload.price       = Number(editForm.price)
     if (editForm.ingredients) payload.ingredients = editForm.ingredients.split(',').map(s => s.trim()).filter(Boolean)
-    if (editForm.recipe) payload.recipe = editForm.recipe.trim()
+    if (editForm.recipe)      payload.recipe      = editForm.recipe.trim()
     try {
       await api.updateDish(payload)
-      setSuccess(`Dish #${editForm.dishId} updated`)
+      setSuccess(`Dish updated successfully`)
       setEditForm(EMPTY_EDIT)
+      setEditingId(null)
       setActiveForm(null)
       load()
     } catch (e) { setError(e.message) }
     finally { setSubmitting(false) }
   }
 
+  async function handleDelete(dish) {
+    if (!window.confirm(`Delete "${dish.name}" from the menu?`)) return
+    setDeleting(dish._id); setError(''); setSuccess('')
+    try {
+      await api.deleteDish(dish._id)
+      setSuccess(`"${dish.name}" deleted from menu`)
+      load()
+    } catch (e) { setError(e.message) }
+    finally { setDeleting(null) }
+  }
+
   function prefillEdit(dish) {
     setEditForm({
-      dishId: String(dish.dishId),
-      price: String(dish.price),
+      dishId:      String(dish.dishId),
+      price:       String(dish.price),
       ingredients: dish.ingredients?.join(', ') || '',
-      recipe: dish.recipe || '',
+      recipe:      dish.recipe || '',
     })
+    setEditingId(dish._id)
     setActiveForm('edit')
+    setError('')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function cancelEdit() {
+    setActiveForm(null)
+    setEditingId(null)
+    setEditForm(EMPTY_EDIT)
     setError('')
   }
 
@@ -86,9 +109,13 @@ export default function MenuManage() {
           <h2 className={`${styles.panelTitle} display`}>Dish Management</h2>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <Button variant="ghost" size="sm" onClick={() => { setActiveForm(activeForm === 'edit' ? null : 'edit'); setError('') }}>
-            {activeForm === 'edit' ? '✕ Cancel' : '✎ Edit Dish'}
-          </Button>
+          {activeForm === 'edit' ? (
+            <Button variant="ghost" size="sm" onClick={cancelEdit}>✕ Cancel Edit</Button>
+          ) : (
+            <Button variant="ghost" size="sm" onClick={() => { setActiveForm('edit'); setError('') }}>
+              ✎ Edit Dish
+            </Button>
+          )}
           <Button size="sm" onClick={() => { setActiveForm(activeForm === 'add' ? null : 'add'); setError('') }}>
             {activeForm === 'add' ? '✕ Cancel' : '+ Add Dish'}
           </Button>
@@ -121,7 +148,9 @@ export default function MenuManage() {
       {/* Edit form */}
       {activeForm === 'edit' && (
         <Card className={`${styles.addForm} animate-fade-up`} glow="cyan">
-          <div className={`${styles.formTitle} mono`}>EDIT DISH — click a dish below to prefill</div>
+          <div className={`${styles.formTitle} mono`}>
+            {editingId ? `EDITING DISH #${editForm.dishId}` : 'EDIT DISH — click a dish below to prefill'}
+          </div>
           <form onSubmit={handleEdit} className={styles.inventoryForm}>
             <Input label="Dish ID" type="number" value={editForm.dishId} onChange={setE('dishId')} placeholder="1" />
             <Input label="New Price (₹)" type="number" value={editForm.price} onChange={setE('price')} placeholder="Leave blank to keep current" />
@@ -148,7 +177,10 @@ export default function MenuManage() {
               <Card
                 key={dish._id}
                 className={`${styles.dishManageCard} animate-fade-up`}
-                style={{ animationDelay: `${i * 0.04}s` }}
+                style={{
+                  animationDelay: `${i * 0.04}s`,
+                  outline: editingId === dish._id ? '2px solid var(--cyan, #00c8ff)' : 'none',
+                }}
               >
                 <div className={styles.dishManageTop}>
                   <div>
@@ -169,9 +201,18 @@ export default function MenuManage() {
                   </div>
                 )}
 
-                <div style={{ marginTop: 12 }}>
+                <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
                   <Button variant="ghost" size="sm" onClick={() => prefillEdit(dish)}>
                     ✎ Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    loading={deleting === dish._id}
+                    onClick={() => handleDelete(dish)}
+                    style={{ color: '#ff6b35' }}
+                  >
+                    {deleting === dish._id ? '…' : '✕ Delete'}
                   </Button>
                 </div>
               </Card>

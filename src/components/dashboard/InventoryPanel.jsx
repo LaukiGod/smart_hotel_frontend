@@ -13,6 +13,7 @@ export default function InventoryPanel() {
   const [loading, setLoading] = useState(true)
   const [form, setForm]       = useState(EMPTY_FORM)
   const [adding, setAdding]   = useState(false)
+  const [deleting, setDeleting] = useState(null)
   const [error, setError]     = useState('')
   const [success, setSuccess] = useState('')
   const [showForm, setShowForm] = useState(false)
@@ -53,6 +54,22 @@ export default function InventoryPanel() {
       setError(e.message)
     } finally {
       setAdding(false)
+    }
+  }
+
+  async function handleDelete(item) {
+    if (!window.confirm(`Remove "${item.name}" from inventory?`)) return
+    setDeleting(item._id)
+    setError('')
+    setSuccess('')
+    try {
+      await api.deleteInventory(item._id)
+      setSuccess(`"${item.name}" removed from inventory`)
+      load()
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setDeleting(null)
     }
   }
 
@@ -150,7 +167,7 @@ export default function InventoryPanel() {
           <SectionTitle mono>All Items ({data.total})</SectionTitle>
           <div className={styles.invTable}>
             <div className={`${styles.invHeader} mono`}>
-              <span>Name</span><span>Qty</span><span>Unit</span><span>Category</span><span>Expiry</span>
+              <span>Name</span><span>Qty</span><span>Unit</span><span>Category</span><span>Expiry</span><span></span>
             </div>
             {data.items.map((item, i) => (
               <div
@@ -167,6 +184,15 @@ export default function InventoryPanel() {
                 <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                   {item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : '—'}
                 </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  loading={deleting === item._id}
+                  onClick={() => handleDelete(item)}
+                  style={{ color: '#ff6b35' }}
+                >
+                  {deleting === item._id ? '…' : '✕ Remove'}
+                </Button>
               </div>
             ))}
           </div>

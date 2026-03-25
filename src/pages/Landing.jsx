@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styles from './Landing.module.css'
 
 const FOOD_IMAGES = [
@@ -30,7 +31,8 @@ const STATS = [
   { val: 'RT', label: 'Real-time',      color: 'var(--ember)' },
 ]
 
-export default function Landing({ onSelect }) {
+export default function Landing() {
+  const navigate = useNavigate()
   const [imgIndex, setImgIndex] = useState(0)
   const [loaded, setLoaded]     = useState(false)
   const [hovCard, setHovCard]   = useState(null)
@@ -102,7 +104,7 @@ export default function Landing({ onSelect }) {
 
               <button
                 className={`${styles.card} ${styles.cardCustomer}`}
-                onClick={() => onSelect('customer')}
+                onClick={() => navigate('/customer')}
                 onMouseEnter={() => setHovCard('c')}
                 onMouseLeave={() => setHovCard(null)}
               >
@@ -125,7 +127,7 @@ export default function Landing({ onSelect }) {
 
               <button
                 className={`${styles.card} ${styles.cardDash}`}
-                onClick={() => onSelect('dashboard')}
+                onClick={() => navigate('/dashboard')}
                 onMouseEnter={() => setHovCard('d')}
                 onMouseLeave={() => setHovCard(null)}
               >

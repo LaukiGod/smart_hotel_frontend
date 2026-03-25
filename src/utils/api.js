@@ -31,7 +31,9 @@ export const api = {
   getAlerts: () => request('GET', '/restaurant/alerts'),
   getInventory: () => request('GET', '/restaurant/inventory'),
   addInventory: (body) => request('POST', '/restaurant/add-inventory', body),
+  deleteInventory: (id) => request('DELETE', `/restaurant/inventory/${id}`),
   getTables: () => request('GET', '/restaurant/tables'),
   addDish: (body) => request('POST', '/restaurant/add-dish', body),
   updateDish: (body) => request('PUT', '/restaurant/update-dish', body),
+  deleteDish: (id) => request('DELETE', `/restaurant/dish/${id}`),
 }

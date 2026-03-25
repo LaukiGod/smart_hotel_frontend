@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TopBar from '../components/TopBar'
 import OrdersPanel from '../components/dashboard/OrdersPanel'
 import AlertsPanel from '../components/dashboard/AlertsPanel'
@@ -15,7 +16,8 @@ const TABS = [
   { id: 'menu',      label: 'Menu',      icon: '✦' },
 ]
 
-export default function Dashboard({ onExit }) {
+export default function Dashboard() {
+  const navigate = useNavigate()
   const [tab, setTab] = useState('orders')
 
   return (
@@ -23,7 +25,7 @@ export default function Dashboard({ onExit }) {
       <TopBar
         title="Staff Dashboard"
         subtitle="Management Console"
-        onExit={onExit}
+        onExit={() => navigate('/')}
         accent="cyan"
       />
 

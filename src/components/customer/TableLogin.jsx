@@ -6,6 +6,7 @@ import styles from './CustomerSteps.module.css'
 const ALL_TABLES = [1, 2, 4, 5, 6, 7, 8, 9, 10]
 
 export default function TableLogin({ onSuccess }) {
+  const [tableList, setTableList] = useState([])
   const [tableStatuses, setTableStatuses] = useState({})
   const [loadingTables, setLoadingTables] = useState(true)
   const [selected, setSelected] = useState(null)
@@ -18,14 +19,16 @@ export default function TableLogin({ onSuccess }) {
     api.getTables()
       .then(tables => {
         const map = {}
-        tables.forEach(t => { map[t.tableNo] = t.status })
+        const nums = []
+        tables.forEach(t => {
+          map[t.tableNo] = t.status
+          nums.push(t.tableNo)
+        })
+        nums.sort((a, b) => a - b)
+        setTableList(nums)
         setTableStatuses(map)
       })
-      .catch(() => {
-        const map = {}
-        ALL_TABLES.forEach(n => { map[n] = 'free' })
-        setTableStatuses(map)
-      })
+      .catch(() => {})
       .finally(() => setLoadingTables(false))
   }, [])
 
@@ -44,7 +47,9 @@ export default function TableLogin({ onSuccess }) {
     const e = {}
     if (!selected) e.table = 'Please select a table first'
     if (!form.name.trim()) e.name = 'Required'
+    else if (form.name.trim().length < 2) e.name = 'Name must be at least 2 characters'
     if (!form.phoneNo.trim()) e.phoneNo = 'Required'
+    else if (!/^\d{7,15}$/.test(form.phoneNo.trim())) e.phoneNo = 'Enter a valid phone number (digits only, 7–15 digits)'
     return e
   }
 
@@ -68,8 +73,8 @@ export default function TableLogin({ onSuccess }) {
     }
   }
 
-  const freeTables = ALL_TABLES.filter(n => tableStatuses[n] !== 'occupied')
-  const allOccupied = !loadingTables && freeTables.length === 0
+  const freeTables = tableList.filter(n => tableStatuses[n] !== 'occupied')
+  const allOccupied = !loadingTables && tableList.length > 0 && freeTables.length === 0
 
   return (
     <div className={`${styles.stepWrap} animate-fade-up`}>
@@ -87,6 +92,14 @@ export default function TableLogin({ onSuccess }) {
             <Spinner size={18} />
             Checking availability…
           </div>
+        ) : tableList.length === 0 ? (
+          <div className={styles.noTablesMsg}>
+            <div className={styles.noTablesIcon}>🍽</div>
+            <div className={styles.noTablesTitle}>No tables available</div>
+            <div className={styles.noTablesSub}>
+              No tables have been set up yet. Please speak to our staff.
+            </div>
+          </div>
         ) : allOccupied ? (
           <div className={styles.noTablesMsg}>
             <div className={styles.noTablesIcon}>🍽</div>
@@ -98,8 +111,7 @@ export default function TableLogin({ onSuccess }) {
         ) : (
           <>
             <div className={styles.tableGrid}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => {
-                const doesNotExist = n === 3
+              {tableList.map(n => {
                 const occupied = tableStatuses[n] === 'occupied'
                 const isSelected = selected === n
 
@@ -107,22 +119,17 @@ export default function TableLogin({ onSuccess }) {
                   <button
                     key={n}
                     type="button"
-                    disabled={doesNotExist || occupied}
+                    disabled={occupied}
                     onClick={() => handleSelectTable(n)}
                     className={[
                       styles.tableCell,
-                      isSelected   ? styles.tableCellActive   : '',
-                      occupied     ? styles.tableCellOccupied : '',
-                      doesNotExist ? styles.tableCellDisabled : '',
+                      isSelected ? styles.tableCellActive   : '',
+                      occupied   ? styles.tableCellOccupied : '',
                     ].filter(Boolean).join(' ')}
-                    aria-label={doesNotExist ? 'Not available' : occupied ? `Table ${n} occupied` : `Select table ${n}`}
+                    aria-label={occupied ? `Table ${n} occupied` : `Select table ${n}`}
                   >
-                    <span className={styles.tableCellNum}>
-                      {doesNotExist ? '—' : n}
-                    </span>
-                    {occupied && !doesNotExist && (
-                      <span className={styles.lockIcon}>🔒</span>
-                    )}
+                    <span className={styles.tableCellNum}>{n}</span>
+                    {occupied && <span className={styles.lockIcon}>🔒</span>}
                   </button>
                 )
               })}

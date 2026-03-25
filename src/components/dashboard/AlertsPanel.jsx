@@ -10,7 +10,7 @@ export default function AlertsPanel() {
 
   useEffect(() => {
     api.getAlerts()
-      .then(setAlerts)
+      .then(data => setAlerts(data.filter(o => o.status !== 'served' && o.status !== 'completed')))
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [])

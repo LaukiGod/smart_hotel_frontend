@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TableLogin from '../components/customer/TableLogin'
 import AllergySetup from '../components/customer/AllergySetup'
 import MenuPage from '../components/customer/MenuPage'
@@ -9,7 +10,8 @@ import styles from './CustomerApp.module.css'
 const STEPS = ['login', 'allergies', 'menu', 'confirmed']
 const STEP_LABELS = { login: 'Table', allergies: 'Allergies', menu: 'Menu', confirmed: 'Order' }
 
-export default function CustomerApp({ onExit }) {
+export default function CustomerApp() {
+  const navigate = useNavigate()
   const [step, setStep] = useState('login')
   const [session, setSession] = useState(null)
   const [lastOrder, setLastOrder] = useState(null)
@@ -27,7 +29,7 @@ export default function CustomerApp({ onExit }) {
       <TopBar
         title="Customer Portal"
         subtitle={session ? `Table ${session.tableNo}` : null}
-        onExit={onExit}
+        onExit={() => navigate('/')}
         accent="ember"
       />
 
