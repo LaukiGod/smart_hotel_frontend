@@ -3,8 +3,8 @@ import { api } from '../../utils/api'
 import { Card, Button, Input, Badge, Spinner, EmptyState, SectionTitle } from '../UI'
 import styles from './DashPanels.module.css'
 
-const EMPTY_ADD = { name: '', price: '', ingredients: '', recipe: '' }
-const EMPTY_EDIT = { dishId: '', price: '', ingredients: '', recipe: '' }
+const EMPTY_ADD = { name: '', price: '', ingredients: '', recipe: '', imageUrl: '' }
+const EMPTY_EDIT = { dishId: '', price: '', ingredients: '', recipe: '', imageUrl: '' }
 
 export default function MenuManage() {
   const [dishes, setDishes]       = useState([])
@@ -40,6 +40,7 @@ export default function MenuManage() {
         price: Number(addForm.price),
         ingredients: addForm.ingredients.split(',').map(s => s.trim()).filter(Boolean),
         recipe: addForm.recipe.trim(),
+        imageUrl: addForm.imageUrl.trim(),
       })
       setSuccess(`"${addForm.name}" added to menu`)
       setAddForm(EMPTY_ADD)
@@ -57,6 +58,7 @@ export default function MenuManage() {
     if (editForm.price)       payload.price       = Number(editForm.price)
     if (editForm.ingredients) payload.ingredients = editForm.ingredients.split(',').map(s => s.trim()).filter(Boolean)
     if (editForm.recipe)      payload.recipe      = editForm.recipe.trim()
+    if (editForm.imageUrl)    payload.imageUrl    = editForm.imageUrl.trim()
     try {
       await api.updateDish(payload)
       setSuccess(`Dish updated successfully`)
@@ -85,6 +87,7 @@ export default function MenuManage() {
       price:       String(dish.price),
       ingredients: dish.ingredients?.join(', ') || '',
       recipe:      dish.recipe || '',
+      imageUrl:    dish.imageUrl || '',
     })
     setEditingId(dish._id)
     setActiveForm('edit')
@@ -131,15 +134,16 @@ export default function MenuManage() {
           <div className={`${styles.formTitle} mono`}>ADD NEW DISH</div>
           <form onSubmit={handleAdd} className={styles.inventoryForm}>
             <Input label="Dish Name" value={addForm.name} onChange={setA('name')} placeholder="e.g. Paneer Tikka" />
+            <Input label="Dish Image Url" value={addForm.imageUrl} onChange={setA('imageUrl')} placeholder="e.g. https://example.com/dish.jpg" />
             <Input label="Price (₹)" type="number" value={addForm.price} onChange={setA('price')} placeholder="280" />
-            <Input
-              label="Ingredients (comma separated)"
-              value={addForm.ingredients}
-              onChange={setA('ingredients')}
-              placeholder="paneer, peanut oil, yogurt, spices"
-              hint="Used for AI allergy detection"
-            />
             <Input label="Recipe (optional)" value={addForm.recipe} onChange={setA('recipe')} placeholder="Internal kitchen notes…" />
+            <Input
+            label="Ingredients (comma separated)"
+            value={addForm.ingredients}
+            onChange={setA('ingredients')}
+            placeholder="paneer, peanut oil, yogurt, spices"
+            hint="Used for AI allergy detection"
+            />
             <Button type="submit" loading={submitting} fullWidth>Add Dish →</Button>
           </form>
         </Card>
@@ -153,6 +157,7 @@ export default function MenuManage() {
           </div>
           <form onSubmit={handleEdit} className={styles.inventoryForm}>
             <Input label="Dish ID" type="number" value={editForm.dishId} onChange={setE('dishId')} placeholder="1" />
+            <Input label="New Image Url" value={editForm.imageUrl} onChange={setE('imageUrl')} placeholder="Leave blank to keep current" />
             <Input label="New Price (₹)" type="number" value={editForm.price} onChange={setE('price')} placeholder="Leave blank to keep current" />
             <Input
               label="New Ingredients (comma separated)"
@@ -182,6 +187,13 @@ export default function MenuManage() {
                   outline: editingId === dish._id ? '2px solid var(--cyan, #00c8ff)' : 'none',
                 }}
               >
+                {dish.imageUrl && (
+                  <img
+                    src={dish.imageUrl}
+                    alt={dish.name}
+                    style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '8px' }}
+                  />
+                )}
                 <div className={styles.dishManageTop}>
                   <div>
                     <div className={`${styles.dishManageId} mono`}>#{dish.dishId}</div>
