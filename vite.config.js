@@ -8,6 +8,14 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            const secret = req.headers['x-restaurant-secret']
+            if (secret) {
+              proxyReq.setHeader('x-restaurant-secret', secret)
+            }
+          })
+        }
       }
     }
   }
