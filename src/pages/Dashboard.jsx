@@ -102,7 +102,10 @@ useEffect(() => {
       <TopBar
         title="Staff Dashboard"
         subtitle="Management Console"
-        onExit={() => navigate('/')}
+        onExit={() => {
+          localStorage.removeItem('restaurantSecret')
+          navigate('/')
+        }}
         accent="cyan"
       />
 
