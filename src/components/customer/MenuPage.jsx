@@ -83,7 +83,7 @@ export default function MenuPage({ session, onOrderPlaced }) {
               >
                 <div className={styles.dishImgWrap}>
                   <img
-                    src={ dish.imageUrl ?? getImage(dish.dishId)}
+                    src={ dish.imageUrl}
                     alt={dish.name}
                     className={styles.dishImg}
                     loading="lazy"
